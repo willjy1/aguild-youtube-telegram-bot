@@ -12,7 +12,7 @@ Telegram bot for AGuild quest #5. It accepts a YouTube URL and returns a timesta
 - Produces timestamped summary sections, key takeaways, and language-specific output.
 - Supports `/start` and `/help` commands for reviewer-friendly bot onboarding.
 - Works in local polling mode or webhook mode for Railway/Vercel-style hosting.
-- Includes tests for URL validation, transcript formatting, caption cleanup, and language detection.
+- Includes tests for URL validation, transcript formatting, caption cleanup, language detection, and deployment configuration.
 
 ## Requirements
 
