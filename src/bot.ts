@@ -12,6 +12,13 @@ export function createBot(config: BotConfig, summaryClient: SummaryClient, trans
     await ctx.reply("Send me a YouTube URL. I will return a timestamped summary and key takeaways.");
   });
 
+  bot.command("help", async (ctx) => {
+    await ctx.reply([
+      "Send a YouTube URL, or paste it inside a normal message.",
+      "I will read captions first, fall back to transcription when needed, and return a timestamped summary with key takeaways."
+    ].join("\n"));
+  });
+
   bot.on("message:text", async (ctx) => {
     const text = ctx.message.text.trim();
     const url = extractFirstYouTubeUrl(text);

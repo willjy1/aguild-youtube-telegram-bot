@@ -10,8 +10,9 @@ Telegram bot for AGuild quest #5. It accepts a YouTube URL and returns a timesta
 - Uses YouTube captions first when available.
 - Falls back to OpenAI Whisper-compatible audio transcription when captions are missing.
 - Produces timestamped summary sections, key takeaways, and language-specific output.
+- Supports `/start` and `/help` commands for reviewer-friendly bot onboarding.
 - Works in local polling mode or webhook mode for Railway/Vercel-style hosting.
-- Includes tests for URL validation, transcript formatting, language detection, and summary parsing.
+- Includes tests for URL validation, transcript formatting, caption cleanup, and language detection.
 
 ## Requirements
 
@@ -48,7 +49,7 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for Railway, Render, Fly.io, webhook, and sou
 
 ## Usage
 
-Send the bot a YouTube URL:
+Send the bot a YouTube URL, or paste one inside a normal chat message:
 
 ```text
 https://www.youtube.com/watch?v=dQw4w9WgXcQ

@@ -4,7 +4,8 @@ import {
   extractYouTubeVideoId,
   formatTimestamp,
   formatTranscriptForPrompt,
-  isYouTubeUrl
+  isYouTubeUrl,
+  normalizeTranscriptText
 } from "../src/youtube.js";
 
 describe("youtube utilities", () => {
@@ -38,5 +39,10 @@ describe("youtube utilities", () => {
       { offsetSeconds: 0, durationSeconds: 2, text: "Intro" },
       { offsetSeconds: 62, durationSeconds: 5, text: "Main idea" }
     ])).toBe("[0:00] Intro\n[1:02] Main idea");
+  });
+
+  it("normalizes common caption HTML entities", () => {
+    expect(normalizeTranscriptText("Tom &amp; Jerry said &quot;hi&#39; &#x41;")).toBe("Tom & Jerry said \"hi' A");
+    expect(normalizeTranscriptText("  2 &lt; 3   and 4 &gt; 1  ")).toBe("2 < 3 and 4 > 1");
   });
 });

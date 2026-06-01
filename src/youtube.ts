@@ -157,6 +157,24 @@ function cleanVideoId(value: string): string | null {
   return /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : null;
 }
 
-function normalizeTranscriptText(value: string): string {
-  return value.replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
+export function normalizeTranscriptText(value: string): string {
+  return value
+    .replace(/&#(\d+);/g, (entity, code: string) => decodeNumericEntity(code, 10) ?? entity)
+    .replace(/&#x([0-9a-fA-F]+);/g, (entity, code: string) => decodeNumericEntity(code, 16) ?? entity)
+    .replace(/&quot;/g, "\"")
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function decodeNumericEntity(code: string, radix: 10 | 16): string | null {
+  const codePoint = Number.parseInt(code, radix);
+  if (!Number.isInteger(codePoint) || codePoint < 0 || codePoint > 0x10ffff) {
+    return null;
+  }
+  return String.fromCodePoint(codePoint);
 }
