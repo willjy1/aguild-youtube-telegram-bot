@@ -2,6 +2,8 @@
 
 Telegram bot for AGuild quest #5. It accepts a YouTube URL and returns a timestamped summary with key takeaways for English and Chinese videos.
 
+[![CI](https://github.com/willjy1/aguild-youtube-telegram-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/willjy1/aguild-youtube-telegram-bot/actions/workflows/ci.yml)
+
 ## Features
 
 - Validates YouTube URLs before queueing work.
@@ -41,11 +43,7 @@ BOT_MODE=polling
 
 ## Railway Deployment
 
-1. Create a Railway service from this repository.
-2. Add the environment variables from `.env.example`.
-3. Set `BOT_MODE=webhook`.
-4. Set `WEBHOOK_URL=https://<your-railway-domain>`.
-5. Deploy. The service listens on `PORT`.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for Railway, Render, Fly.io, webhook, and source-only handoff instructions.
 
 ## Usage
 
