@@ -28,6 +28,7 @@ npm install
 cp .env.example .env
 npm run build
 npm test
+npm run demo
 npm run dev
 ```
 
@@ -59,6 +60,16 @@ The reply contains:
 - Timestamped outline
 - Key takeaways
 - Short operational note if captions were used or Whisper fallback was required
+
+## Credential-Free Demo
+
+Run a deterministic source-only demo without Telegram or OpenAI credentials:
+
+```bash
+npm run demo
+```
+
+This prints the same final response shape the Telegram bot sends: video header, detected language, transcript source, timestamped summary, key takeaways, and follow-up questions. It is intended for fast review before live deployment credentials are available.
 
 ## Operational Limits
 
