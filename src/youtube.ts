@@ -52,6 +52,17 @@ export function isYouTubeUrl(input: string): boolean {
   return extractYouTubeVideoId(input) !== null;
 }
 
+export function extractFirstYouTubeUrl(input: string): string | null {
+  for (const match of input.matchAll(/https?:\/\/[^\s<>)]+/g)) {
+    const candidate = match[0].replace(/[.,!?;:]+$/, "");
+    if (isYouTubeUrl(candidate)) {
+      return candidate;
+    }
+  }
+
+  return isYouTubeUrl(input) ? input.trim() : null;
+}
+
 export async function fetchCaptionTranscript(url: string): Promise<VideoTranscript> {
   const videoId = extractYouTubeVideoId(url);
   if (!videoId) {

@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { extractYouTubeVideoId, formatTimestamp, formatTranscriptForPrompt, isYouTubeUrl } from "../src/youtube.js";
+import {
+  extractFirstYouTubeUrl,
+  extractYouTubeVideoId,
+  formatTimestamp,
+  formatTranscriptForPrompt,
+  isYouTubeUrl
+} from "../src/youtube.js";
 
 describe("youtube utilities", () => {
   it("extracts common YouTube URL shapes", () => {
@@ -12,6 +18,13 @@ describe("youtube utilities", () => {
   it("rejects non-YouTube URLs", () => {
     expect(isYouTubeUrl("https://example.com/watch?v=dQw4w9WgXcQ")).toBe(false);
     expect(isYouTubeUrl("not a url")).toBe(false);
+  });
+
+  it("extracts a YouTube URL from normal chat text", () => {
+    expect(extractFirstYouTubeUrl("please summarize https://youtu.be/dQw4w9WgXcQ, thanks")).toBe(
+      "https://youtu.be/dQw4w9WgXcQ"
+    );
+    expect(extractFirstYouTubeUrl("no link here")).toBeNull();
   });
 
   it("formats timestamps for Telegram-readable summaries", () => {

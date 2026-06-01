@@ -3,7 +3,7 @@ import type { BotConfig } from "./config.js";
 import type { SummaryClient } from "./summarizer.js";
 import { chunkTelegramMessage } from "./summarizer.js";
 import type { Transcriber } from "./transcriber.js";
-import { fetchVideoTranscript, isYouTubeUrl } from "./youtube.js";
+import { extractFirstYouTubeUrl, fetchVideoTranscript } from "./youtube.js";
 
 export function createBot(config: BotConfig, summaryClient: SummaryClient, transcriber: Transcriber): Bot {
   const bot = new Bot(config.TELEGRAM_BOT_TOKEN);
@@ -14,14 +14,15 @@ export function createBot(config: BotConfig, summaryClient: SummaryClient, trans
 
   bot.on("message:text", async (ctx) => {
     const text = ctx.message.text.trim();
-    if (!isYouTubeUrl(text)) {
+    const url = extractFirstYouTubeUrl(text);
+    if (!url) {
       await ctx.reply("Please send a valid YouTube URL.");
       return;
     }
 
     const progress = await ctx.reply("Reading transcript and preparing summary...");
     try {
-      const transcript = await fetchVideoTranscript(text, transcriber, config.MAX_VIDEO_SECONDS);
+      const transcript = await fetchVideoTranscript(url, transcriber, config.MAX_VIDEO_SECONDS);
       if (transcript.segments.length === 0) {
         throw new Error("No transcript segments were found.");
       }
