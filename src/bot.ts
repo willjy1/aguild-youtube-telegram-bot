@@ -38,10 +38,11 @@ export function createBot(config: BotConfig, summaryClient: SummaryClient, trans
       for (const chunk of chunkTelegramMessage(`${header}${summary.markdown}`)) {
         await ctx.reply(chunk);
       }
-      await ctx.api.deleteMessage(ctx.chat.id, progress.message_id).catch(() => undefined);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
       await ctx.reply(`Could not summarize this video yet: ${message}`);
+    } finally {
+      await ctx.api.deleteMessage(ctx.chat.id, progress.message_id).catch(() => undefined);
     }
   });
 
