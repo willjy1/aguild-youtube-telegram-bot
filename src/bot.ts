@@ -2,9 +2,10 @@ import { Bot } from "grammy";
 import type { BotConfig } from "./config.js";
 import type { SummaryClient } from "./summarizer.js";
 import { chunkTelegramMessage } from "./summarizer.js";
-import { fetchCaptionTranscript, isYouTubeUrl } from "./youtube.js";
+import type { Transcriber } from "./transcriber.js";
+import { fetchVideoTranscript, isYouTubeUrl } from "./youtube.js";
 
-export function createBot(config: BotConfig, summaryClient: SummaryClient): Bot {
+export function createBot(config: BotConfig, summaryClient: SummaryClient, transcriber: Transcriber): Bot {
   const bot = new Bot(config.TELEGRAM_BOT_TOKEN);
 
   bot.command("start", async (ctx) => {
@@ -20,7 +21,7 @@ export function createBot(config: BotConfig, summaryClient: SummaryClient): Bot 
 
     const progress = await ctx.reply("Reading transcript and preparing summary...");
     try {
-      const transcript = await fetchCaptionTranscript(text);
+      const transcript = await fetchVideoTranscript(text, transcriber, config.MAX_VIDEO_SECONDS);
       if (transcript.segments.length === 0) {
         throw new Error("No transcript segments were found.");
       }

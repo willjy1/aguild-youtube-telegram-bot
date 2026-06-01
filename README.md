@@ -6,7 +6,7 @@ Telegram bot for AGuild quest #5. It accepts a YouTube URL and returns a timesta
 
 - Validates YouTube URLs before queueing work.
 - Uses YouTube captions first when available.
-- Falls back to OpenAI Whisper-compatible transcription when audio download is available.
+- Falls back to OpenAI Whisper-compatible audio transcription when captions are missing.
 - Produces timestamped summary sections, key takeaways, and language-specific output.
 - Works in local polling mode or webhook mode for Railway/Vercel-style hosting.
 - Includes tests for URL validation, transcript formatting, language detection, and summary parsing.
@@ -67,7 +67,7 @@ The reply contains:
 - `MAX_VIDEO_SECONDS` defaults to 3600 to avoid runaway jobs.
 - Very long videos should be split before summarization.
 - Private, age-restricted, or region-blocked videos may fail caption and audio extraction.
-- If no captions are available, Whisper fallback requires an audio download path and OpenAI API access.
+- If no captions are available, Whisper fallback downloads the video's audio stream and requires OpenAI API access.
 
 ## Quest Handoff Notes
 

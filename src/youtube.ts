@@ -1,5 +1,6 @@
 import ytdl from "ytdl-core";
 import { YoutubeTranscript } from "youtube-transcript";
+import type { Transcriber } from "./transcriber.js";
 
 export interface TranscriptSegment {
   offsetSeconds: number;
@@ -72,6 +73,55 @@ export async function fetchCaptionTranscript(url: string): Promise<VideoTranscri
       text: normalizeTranscriptText(entry.text)
     })).filter((entry) => entry.text.length > 0)
   };
+}
+
+export async function fetchVideoTranscript(
+  url: string,
+  transcriber: Transcriber,
+  maxVideoSeconds: number
+): Promise<VideoTranscript> {
+  try {
+    const captionTranscript = await fetchCaptionTranscript(url);
+    if (captionTranscript.segments.length > 0) {
+      return captionTranscript;
+    }
+  } catch {
+    // Captions are optional. Fall through to audio transcription.
+  }
+
+  const videoId = extractYouTubeVideoId(url);
+  if (!videoId) {
+    throw new Error("Invalid YouTube URL");
+  }
+
+  const info = await ytdl.getBasicInfo(url);
+  const lengthSeconds = Number(info.videoDetails.lengthSeconds);
+  if (Number.isFinite(lengthSeconds) && lengthSeconds > maxVideoSeconds) {
+    throw new Error(`Video is ${lengthSeconds}s, above MAX_VIDEO_SECONDS=${maxVideoSeconds}`);
+  }
+
+  const audio = await downloadAudioBuffer(url);
+  const segments = await transcriber.transcribe(audio, `${videoId}.webm`);
+  return {
+    videoId,
+    title: info.videoDetails.title,
+    source: "whisper",
+    segments
+  };
+}
+
+async function downloadAudioBuffer(url: string): Promise<Buffer> {
+  const stream = ytdl(url, {
+    quality: "highestaudio",
+    filter: "audioonly",
+    highWaterMark: 1 << 25
+  });
+
+  const chunks: Buffer[] = [];
+  for await (const chunk of stream) {
+    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+  }
+  return Buffer.concat(chunks);
 }
 
 export function formatTranscriptForPrompt(segments: TranscriptSegment[]): string {
